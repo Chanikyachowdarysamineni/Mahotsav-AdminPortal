@@ -31,6 +31,12 @@ const Coordinators = () => {
   const fetchCoordinators = async () => {
     try {
       setLoading(true);
+      
+      // First, cleanup inactive coordinators
+      await api.post('/coordinators/cleanup-inactive').catch(err => 
+        console.log('Cleanup failed:', err)
+      );
+      
       const response = await api.get('/coordinators');
       const coordinatorsData = response.data;
       setCoordinators(coordinatorsData);

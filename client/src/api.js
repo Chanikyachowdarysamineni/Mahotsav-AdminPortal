@@ -74,6 +74,7 @@ export const authAPI = {
   login: (credentials) => api.post('/auth/login', credentials),
   register: (userData) => api.post('/auth/register', userData),
   getCurrentUser: () => api.get('/auth/me'),
+  logout: () => api.post('/auth/logout'),
 };
 
 // Participants API
@@ -140,6 +141,7 @@ export const coordinatorsAPI = {
   recordLogout: (id) => api.post(`/coordinators/${id}/logout`),
   recordCollection: (id, amount) => api.post(`/coordinators/${id}/collection`, { amount }),
   getStats: (id) => api.get(`/coordinators/${id}/stats`),
+  cleanupInactive: () => api.post('/coordinators/cleanup-inactive'),
 };
 
 // Dashboard API (NEW - Optimized)

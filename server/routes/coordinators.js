@@ -207,3 +207,23 @@ router.get('/:id/stats', auth, async (req, res) => {
     res.status(500).json({ message: 'Server error', error: err.message });
   }
 });
+
+// Cleanup inactive coordinators (mark as offline if no activity for 5 minutes)
+router.post('/cleanup-inactive', auth, async (req, res) => {
+  try {
+    const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000);
+    const result = await Coordinator.updateMany(
+      {
+        loginStatus: 'online',
+        lastLoginAt: { $lt: fiveMinutesAgo }
+      },
+      {
+        $set: { loginStatus: 'offline', lastLogoutAt: new Date() }
+      }
+    );
+    res.json({ message: 'Inactive coordinators cleaned up', updated: result.modifiedCount });
+  } catch (err) {
+    console.error('Error cleaning up inactive coordinators:', err);
+    res.status(500).json({ message: 'Server error', error: err.message });
+  }
+});

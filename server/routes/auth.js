@@ -3,6 +3,7 @@ const router = express.Router();
 const jwt = require('jsonwebtoken');
 const Lead = require('../models/Lead');
 const User = require('../models/User');
+const Coordinator = require('../models/Coordinator');
 const auth = require('../middleware/auth');
 
 // Register
@@ -55,13 +56,18 @@ router.post('/login', async (req, res) => {
 
     console.log('Login attempt:', { email, passwordProvided: !!password });
 
-    // Check if user exists in users collection first, then leads
+    // Check if user exists in users collection first, then leads, then coordinators
     let user = await User.findOne({ email });
-    let isUserCollection = true;
+    let userType = 'user';
     
     if (!user) {
       user = await Lead.findOne({ email });
-      isUserCollection = false;
+      userType = 'lead';
+    }
+    
+    if (!user) {
+      user = await Coordinator.findOne({ email });
+      userType = 'coordinator';
     }
     
     if (!user) {
@@ -69,10 +75,16 @@ router.post('/login', async (req, res) => {
       return res.status(400).json({ message: 'Invalid credentials' });
     }
 
-    console.log('User found in', isUserCollection ? 'users' : 'leads', ':', { email: user.email, hasPassword: !!user.password });
+    console.log('User found in', userType, ':', { email: user.email, hasPassword: !!user.password });
 
-    // Check password
-    const isMatch = await user.comparePassword(password);
+    // Check password (coordinators use bcrypt directly)
+    let isMatch;
+    if (userType === 'coordinator') {
+      const bcrypt = require('bcryptjs');
+      isMatch = await bcrypt.compare(password, user.password);
+    } else {
+      isMatch = await user.comparePassword(password);
+    }
     console.log('Password match result:', isMatch);
     
     if (!isMatch) {
@@ -80,9 +92,14 @@ router.post('/login', async (req, res) => {
       return res.status(400).json({ message: 'Invalid credentials' });
     }
 
+    // If coordinator, record login and update status
+    if (userType === 'coordinator') {
+      await user.recordLogin();
+    }
+
     // Generate token
     const token = jwt.sign(
-      { id: user._id },
+      { id: user._id, type: userType },
       process.env.JWT_SECRET,
       { expiresIn: '7d' }
     );
@@ -91,9 +108,10 @@ router.post('/login', async (req, res) => {
       token,
       user: {
         id: user._id,
-        name: isUserCollection ? user.fullName : user.name,
+        name: userType === 'user' ? user.fullName : (userType === 'coordinator' ? `${user.firstName} ${user.lastName}` : user.name),
         email: user.email,
-        role: user.role
+        role: user.role || 'coordinator',
+        type: userType
       }
     });
   } catch (error) {
@@ -108,13 +126,29 @@ router.get('/me', auth, async (req, res) => {
     res.json({
       user: {
         id: req.user._id,
-        name: req.user.fullName || req.user.name, // Support both User (fullName) and Lead (name)
+        name: req.user.fullName || req.user.name || `${req.user.firstName} ${req.user.lastName}`,
         email: req.user.email,
         role: req.user.role
       }
     });
   } catch (error) {
     console.error('Get user error:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// Logout (for coordinators to update status)
+router.post('/logout', auth, async (req, res) => {
+  try {
+    // Check if user is a coordinator
+    const coordinator = await Coordinator.findById(req.user._id);
+    if (coordinator) {
+      await coordinator.recordLogout();
+      console.log('Coordinator logged out:', coordinator.email);
+    }
+    res.json({ message: 'Logged out successfully' });
+  } catch (error) {
+    console.error('Logout error:', error);
     res.status(500).json({ message: 'Server error' });
   }
 });

@@ -40,9 +40,19 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const logout = () => {
-    localStorage.removeItem('token');
-    setUser(null);
+  const logout = async () => {
+    try {
+      // Call backend to record logout (especially for coordinators)
+      const token = localStorage.getItem('token');
+      if (token) {
+        await authAPI.logout().catch(err => console.log('Logout API call failed:', err));
+      }
+    } catch (error) {
+      console.log('Error during logout:', error);
+    } finally {
+      localStorage.removeItem('token');
+      setUser(null);
+    }
   };
 
   return (
