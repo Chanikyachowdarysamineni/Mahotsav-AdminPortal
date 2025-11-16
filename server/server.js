@@ -5,7 +5,16 @@ const path = require('path');
 const connectDB = require('./config/db');
 
 // Load environment variables from parent directory
-dotenv.config({ path: path.join(__dirname, '..', '.env') });
+const envPath = path.join(__dirname, '..', '.env');
+console.log('Loading .env from:', envPath);
+const envResult = dotenv.config({ path: envPath });
+
+if (envResult.error) {
+  console.error('Error loading .env file:', envResult.error);
+} else {
+  console.log('Environment variables loaded successfully');
+  console.log('MONGODB_URI exists:', !!process.env.MONGODB_URI);
+}
 
 // Connect to MongoDB
 connectDB();
