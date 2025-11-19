@@ -27,8 +27,17 @@ connectDB();
 
 const app = express();
 
-// Middleware
-app.use(cors());
+// Middleware - CORS configuration (MUST be before routes)
+app.use(cors({
+  origin: ['http://localhost:5173', 'http://localhost:5174', 'http://localhost:3000', 'http://localhost:5000', 'http://127.0.0.1:5173', 'http://127.0.0.1:5174'],
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'],
+  exposedHeaders: ['Content-Range', 'X-Content-Range'],
+  optionsSuccessStatus: 200,
+  maxAge: 86400 // 24 hours
+}));
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 

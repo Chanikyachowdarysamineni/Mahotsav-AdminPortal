@@ -4,6 +4,44 @@ const Coordinator = require('../models/Coordinator');
 const auth = require('../middleware/auth');
 const bcrypt = require('bcryptjs');
 
+// SYNC coordinators: Remove all and insert new
+// @route   POST /api/coordinators/sync
+// @desc    Replace all coordinators with new list
+// @access  Private (Admin)
+router.post('/sync', auth, async (req, res) => {
+  try {
+    const { coordinators } = req.body;
+    if (!Array.isArray(coordinators) || coordinators.length === 0) {
+      return res.status(400).json({ message: 'No coordinators provided' });
+    }
+
+    // Remove all coordinators
+    await Coordinator.deleteMany({});
+
+    // Hash passwords if provided
+    const toInsert = await Promise.all(coordinators.map(async (c) => {
+      if (c.password) {
+        const salt = await bcrypt.genSalt(10);
+        c.password = await bcrypt.hash(c.password, salt);
+      }
+      return c;
+    }));
+
+    // Insert new coordinators
+    const inserted = await Coordinator.insertMany(toInsert);
+    // Remove password from response
+    const response = inserted.map(c => {
+      const obj = c.toObject();
+      delete obj.password;
+      return obj;
+    });
+    res.status(201).json({ message: 'Coordinators synced', coordinators: response });
+  } catch (error) {
+    console.error('Error syncing coordinators:', error);
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+});
+
 // @route   GET /api/coordinators
 // @desc    Get all coordinators
 // @access  Private (Admin)
