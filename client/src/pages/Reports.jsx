@@ -175,7 +175,11 @@ const Reports = () => {
       );
     }
     if (filters.paymentStatus) {
-      data = data.filter(item => item.paymentStatus === filters.paymentStatus);
+      data = data.filter(item => {
+        const status = (item.paymentStatus || '').toLowerCase();
+        const filterStatus = filters.paymentStatus.toLowerCase();
+        return status === filterStatus;
+      });
     }
     if (filters.category) {
       data = data.filter(item => item.category === filters.category);
@@ -355,13 +359,17 @@ const Reports = () => {
               <td className="px-6 py-4 text-sm font-black text-green-600 text-lg">₹{reg.amountPaid || reg.amount || 0}</td>
               <td className="px-6 py-4 text-sm">
                 <span className={`px-3 py-1.5 rounded-lg text-xs font-bold shadow-sm ${
-                  reg.paymentStatus === 'paid' || reg.paymentStatus === 'Paid' ? 'bg-green-100 text-green-800 border border-green-300' : 
-                  reg.paymentStatus === 'pending' || reg.paymentStatus === 'Pending' ? 'bg-yellow-100 text-yellow-800 border border-yellow-300' : 
-                  'bg-red-100 text-red-800 border border-red-300'
+                  (reg.paymentStatus || '').toLowerCase() === 'paid' ? 'bg-green-100 text-green-800 border border-green-300' : 
+                  (reg.paymentStatus || '').toLowerCase() === 'pending' ? 'bg-yellow-100 text-yellow-800 border border-yellow-300' : 
+                  (reg.paymentStatus || '').toLowerCase() === 'failed' ? 'bg-red-100 text-red-800 border border-red-300' : 
+                  (reg.paymentStatus || '').toLowerCase() === 'refunded' ? 'bg-purple-100 text-purple-800 border border-purple-300' : 
+                  'bg-gray-100 text-gray-800 border border-gray-300'
                 }`}>
-                  {(reg.paymentStatus === 'paid' || reg.paymentStatus === 'Paid') ? '✅ Paid' : 
-                   (reg.paymentStatus === 'pending' || reg.paymentStatus === 'Pending') ? '⏳ Pending' : 
-                   '❌ ' + (reg.paymentStatus || 'N/A')}
+                  {(reg.paymentStatus || '').toLowerCase() === 'paid' ? '✅ Paid' : 
+                   (reg.paymentStatus || '').toLowerCase() === 'pending' ? '⏳ Pending' : 
+                   (reg.paymentStatus || '').toLowerCase() === 'failed' ? '❌ Failed' : 
+                   (reg.paymentStatus || '').toLowerCase() === 'refunded' ? '🔄 Refunded' : 
+                   reg.paymentStatus || 'N/A'}
                 </span>
               </td>
               <td className="px-6 py-4 text-sm text-gray-600 font-medium">
@@ -398,10 +406,15 @@ const Reports = () => {
               <td className="px-6 py-4 text-sm text-gray-700 font-medium">{part.eventId?.eventName || part.eventName || 'N/A'}</td>
               <td className="px-6 py-4 text-sm">
                 <span className={`px-3 py-1.5 rounded-lg text-xs font-bold shadow-sm ${
-                  part.paymentStatus === 'paid' || part.paymentStatus === 'Paid' ? 'bg-green-100 text-green-800 border border-green-300' : 
-                  'bg-yellow-100 text-yellow-800 border border-yellow-300'
+                  (part.paymentStatus || '').toLowerCase() === 'paid' ? 'bg-green-100 text-green-800 border border-green-300' : 
+                  (part.paymentStatus || '').toLowerCase() === 'pending' ? 'bg-yellow-100 text-yellow-800 border border-yellow-300' : 
+                  (part.paymentStatus || '').toLowerCase() === 'failed' ? 'bg-red-100 text-red-800 border border-red-300' : 
+                  'bg-gray-100 text-gray-800 border border-gray-300'
                 }`}>
-                  {(part.paymentStatus === 'paid' || part.paymentStatus === 'Paid') ? '✅ Paid' : '⏳ ' + (part.paymentStatus || 'N/A')}
+                  {(part.paymentStatus || '').toLowerCase() === 'paid' ? '✅ Paid' : 
+                   (part.paymentStatus || '').toLowerCase() === 'pending' ? '⏳ Pending' : 
+                   (part.paymentStatus || '').toLowerCase() === 'failed' ? '❌ Failed' : 
+                   part.paymentStatus || 'N/A'}
                 </span>
               </td>
               <td className="px-6 py-4 text-sm">
@@ -705,10 +718,9 @@ const Reports = () => {
                   >
                     <option value="">All Status</option>
                     <option value="paid">✅ Paid</option>
-                    <option value="Paid">✅ Paid</option>
                     <option value="pending">⏳ Pending</option>
-                    <option value="Pending">⏳ Pending</option>
                     <option value="failed">❌ Failed</option>
+                    <option value="refunded">🔄 Refunded</option>
                   </select>
                 </div>
               </div>

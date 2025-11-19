@@ -179,10 +179,10 @@ const Registrations = () => {
               className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-indigo-100 focus:border-indigo-500 transition-all duration-200 bg-gray-50"
             >
               <option value="">All Payment Status</option>
-              <option value="paid">Paid</option>
-              <option value="pending">Pending</option>
-              <option value="unpaid">Unpaid</option>
-              <option value="failed">Failed</option>
+              <option value="paid">✅ Paid</option>
+              <option value="pending">⏳ Pending</option>
+              <option value="failed">❌ Failed</option>
+              <option value="refunded">🔄 Refunded</option>
             </select>
             <select
               value={type}
@@ -290,13 +290,18 @@ const Registrations = () => {
                         </div>
                       </td>
                       <td className="px-6 py-4">
-                        <span className={`px-4 py-2 inline-flex text-xs leading-5 font-bold rounded-full ${
-                          (reg.paymentStatus || '').toLowerCase() === 'paid' ? 'bg-green-100 text-green-800' :
-                          (reg.paymentStatus || '').toLowerCase() === 'pending' ? 'bg-yellow-100 text-yellow-800' :
-                          (reg.paymentStatus || '').toLowerCase() === 'unpaid' ? 'bg-orange-100 text-orange-800' :
-                          'bg-red-100 text-red-800'
+                        <span className={`px-4 py-2 inline-flex text-xs leading-5 font-bold rounded-full uppercase ${
+                          (reg.paymentStatus || '').toLowerCase() === 'paid' ? 'bg-green-100 text-green-800 border border-green-300' :
+                          (reg.paymentStatus || '').toLowerCase() === 'pending' ? 'bg-yellow-100 text-yellow-800 border border-yellow-300' :
+                          (reg.paymentStatus || '').toLowerCase() === 'failed' ? 'bg-red-100 text-red-800 border border-red-300' :
+                          (reg.paymentStatus || '').toLowerCase() === 'refunded' ? 'bg-purple-100 text-purple-800 border border-purple-300' :
+                          'bg-gray-100 text-gray-800 border border-gray-300'
                         }`}>
-                          {reg.paymentStatus || 'pending'}
+                          {(reg.paymentStatus || '').toLowerCase() === 'paid' ? '✅ Paid' :
+                           (reg.paymentStatus || '').toLowerCase() === 'pending' ? '⏳ Pending' :
+                           (reg.paymentStatus || '').toLowerCase() === 'failed' ? '❌ Failed' :
+                           (reg.paymentStatus || '').toLowerCase() === 'refunded' ? '🔄 Refunded' :
+                           reg.paymentStatus || 'pending'}
                         </span>
                       </td>
                     </tr>
@@ -379,7 +384,21 @@ const Registrations = () => {
 
                   <div className="bg-gradient-to-br from-teal-50 to-cyan-50 p-4 rounded-xl">
                     <p className="text-xs font-bold text-teal-600 mb-2 uppercase tracking-wide">Payment Status</p>
-                    <p className="text-lg font-bold text-gray-900">{selectedRegistration.paymentStatus || 'Pending'}</p>
+                    <div className="flex items-center space-x-2 mb-2">
+                      <span className={`px-3 py-1.5 inline-flex text-xs leading-5 font-bold rounded-lg uppercase ${
+                        (selectedRegistration.paymentStatus || '').toLowerCase() === 'paid' ? 'bg-green-100 text-green-800 border border-green-300' :
+                        (selectedRegistration.paymentStatus || '').toLowerCase() === 'pending' ? 'bg-yellow-100 text-yellow-800 border border-yellow-300' :
+                        (selectedRegistration.paymentStatus || '').toLowerCase() === 'failed' ? 'bg-red-100 text-red-800 border border-red-300' :
+                        (selectedRegistration.paymentStatus || '').toLowerCase() === 'refunded' ? 'bg-purple-100 text-purple-800 border border-purple-300' :
+                        'bg-gray-100 text-gray-800 border border-gray-300'
+                      }`}>
+                        {(selectedRegistration.paymentStatus || '').toLowerCase() === 'paid' ? '✅ Paid' :
+                         (selectedRegistration.paymentStatus || '').toLowerCase() === 'pending' ? '⏳ Pending' :
+                         (selectedRegistration.paymentStatus || '').toLowerCase() === 'failed' ? '❌ Failed' :
+                         (selectedRegistration.paymentStatus || '').toLowerCase() === 'refunded' ? '🔄 Refunded' :
+                         selectedRegistration.paymentStatus || 'Pending'}
+                      </span>
+                    </div>
                     <p className="text-sm text-gray-600 mt-1">₹{selectedRegistration.amountPaid || 0} of ₹{selectedRegistration.totalAmount || 0}</p>
                   </div>
 

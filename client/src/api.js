@@ -86,6 +86,7 @@ export const participantsAPI = {
   delete: (id) => api.delete(`/participants/${id}`),
   getByEvent: (eventId) => api.get(`/participants/event/${eventId}`),
   getByCollege: (college) => api.get(`/participants/college/${college}`),
+  clearAll: () => api.delete('/participants/clear/all'),
 };
 
 // Registrations API
@@ -190,6 +191,7 @@ export const eventRegistrationsAPI = {
   getByCollege: (college) => api.get(`/event-registrations/college/${college}`),
   getByStatus: (status) => api.get(`/event-registrations/status/${status}`),
   getStats: () => api.get('/event-registrations/stats/summary'),
+  clearAll: () => api.delete('/event-registrations/clear/all'),
 };
 
 export default api;

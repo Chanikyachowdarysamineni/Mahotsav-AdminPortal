@@ -221,4 +221,20 @@ router.delete('/:id', auth, async (req, res) => {
   }
 });
 
+// @route   DELETE /api/event-registrations/clear/all
+// @desc    Clear all event registrations
+// @access  Private
+router.delete('/clear/all', auth, async (req, res) => {
+  try {
+    const result = await EventRegistration.deleteMany({});
+    res.json({ 
+      message: 'All event registrations cleared successfully', 
+      deletedCount: result.deletedCount 
+    });
+  } catch (error) {
+    console.error('Error clearing event registrations:', error);
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+});
+
 module.exports = router;

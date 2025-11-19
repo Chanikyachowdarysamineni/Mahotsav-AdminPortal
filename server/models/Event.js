@@ -4,7 +4,6 @@ const eventSchema = new mongoose.Schema({
   // Basic Event Information
   eventName: {
     type: String,
-    required: true,
     trim: true
   },
   eventId: {
@@ -13,16 +12,14 @@ const eventSchema = new mongoose.Schema({
     unique: true
   },
   
-  // Category & Type (NEW STRUCTURE)
+  // Category & Type (Flexible structure for frontend compatibility)
   category: {
     type: String,
-    enum: ['sports', 'cultural'],
-    required: true
+    enum: ['sports', 'cultural', 'para']
   },
   eventType: {
     type: String,
-    enum: ['team', 'individual'],
-    required: true
+    enum: ['team', 'individual', 'sports', 'cultural', 'para']
   },
   
   // Team Configuration
@@ -70,6 +67,12 @@ const eventSchema = new mongoose.Schema({
   currentParticipants: {
     type: Number,
     default: 0
+  },
+  
+  // Count - Number of participants per team/event
+  count: {
+    type: Number,
+    default: 1
   },
   
   // Status

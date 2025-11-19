@@ -360,13 +360,13 @@ const Dashboard = () => {
                 <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-5 border-l-4 border-blue-500 shadow-lg">
                   <p className="text-xs text-gray-600 font-bold mb-2 uppercase tracking-wide">Total Colleges</p>
                   <p className="text-3xl font-black text-gray-800">
-                    {loading ? '...' : statistics?.totalColleges || 0}
+                    {loading ? '...' : (adminMetrics?.totals?.colleges ?? statistics?.totalColleges ?? 0)}
                   </p>
                 </div>
                 <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-xl p-5 border-l-4 border-green-500 shadow-lg">
                   <p className="text-xs text-gray-600 font-bold mb-2 uppercase tracking-wide">Total States</p>
                   <p className="text-3xl font-black text-gray-800">
-                    {loading ? '...' : statistics?.totalStates || 0}
+                    {loading ? '...' : (statistics?.totalStates ?? 1)}
                   </p>
                 </div>
               </div>
@@ -376,13 +376,13 @@ const Dashboard = () => {
                   <div>
                     <p className="text-xs text-gray-600 font-bold mb-2 uppercase tracking-wide">Paid Registrations</p>
                     <p className="text-3xl font-black text-gray-800">
-                      {loading ? '...' : statistics?.paidCount || 0}
+                      {loading ? '...' : (statistics?.paidCount ?? participantStats.paid ?? 0)}
                     </p>
                   </div>
                   <div className="text-right">
                     <p className="text-xs text-gray-600 font-bold mb-2 uppercase tracking-wide">Amount</p>
                     <p className="text-2xl font-black text-green-600">
-                      ₹{loading ? '...' : statistics?.paidAmount?.toLocaleString() || 0}
+                      ₹{loading ? '...' : (statistics?.paidAmount ?? participantStats.revenue ?? 0).toLocaleString()}
                     </p>
                   </div>
                 </div>
@@ -393,13 +393,13 @@ const Dashboard = () => {
                   <div>
                     <p className="text-xs text-gray-600 font-bold mb-2 uppercase tracking-wide">Pending Payments</p>
                     <p className="text-3xl font-black text-gray-800">
-                      {loading ? '...' : statistics?.pendingCount || 0}
+                      {loading ? '...' : (statistics?.pendingCount ?? participantStats.pending ?? 0)}
                     </p>
                   </div>
                   <div className="text-right">
                     <p className="text-xs text-gray-600 font-bold mb-2 uppercase tracking-wide">Expected</p>
                     <p className="text-2xl font-black text-orange-600">
-                      ₹{loading ? '...' : statistics?.pendingAmount?.toLocaleString() || 0}
+                      ₹{loading ? '...' : (statistics?.pendingAmount ?? 0).toLocaleString()}
                     </p>
                   </div>
                 </div>

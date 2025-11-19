@@ -4,16 +4,22 @@ const dotenv = require('dotenv');
 const path = require('path');
 const connectDB = require('./config/db');
 
-// Load environment variables from parent directory
-const envPath = path.join(__dirname, '..', '.env');
-console.log('Loading .env from:', envPath);
-const envResult = dotenv.config({ path: envPath });
+// Load environment variables
+// In production (Vercel), use environment variables directly
+// In development, load from .env file
+if (process.env.NODE_ENV !== 'production') {
+  const envPath = path.join(__dirname, '..', '.env');
+  console.log('Loading .env from:', envPath);
+  const envResult = dotenv.config({ path: envPath });
 
-if (envResult.error) {
-  console.error('Error loading .env file:', envResult.error);
+  if (envResult.error) {
+    console.error('Error loading .env file:', envResult.error);
+  } else {
+    console.log('Environment variables loaded successfully');
+    console.log('MONGODB_URI exists:', !!process.env.MONGODB_URI);
+  }
 } else {
-  console.log('Environment variables loaded successfully');
-  console.log('MONGODB_URI exists:', !!process.env.MONGODB_URI);
+  console.log('Running in production mode - using environment variables from host');
 }
 
 // Connect to MongoDB

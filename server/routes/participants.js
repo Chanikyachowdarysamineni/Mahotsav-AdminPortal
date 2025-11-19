@@ -145,4 +145,18 @@ router.get('/college/:college', auth, async (req, res) => {
   }
 });
 
+// Clear all participants
+router.delete('/clear/all', auth, async (req, res) => {
+  try {
+    const result = await Participant.deleteMany({});
+    res.json({ 
+      message: 'All participants cleared successfully', 
+      deletedCount: result.deletedCount 
+    });
+  } catch (error) {
+    console.error('Error clearing participants:', error);
+    res.status(500).json({ message: error.message || 'Server error' });
+  }
+});
+
 module.exports = router;
