@@ -10,50 +10,168 @@ const Events = () => {
   const [showModal, setShowModal] = useState(false);
   const [editingEvent, setEditingEvent] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
-  const [filterType, setFilterType] = useState('all'); // 'all', 'sports', 'cultural', 'para'
+  const [selectedSession, setSelectedSession] = useState('men'); // 'men', 'women', 'para'
+  const [selectedCategory, setSelectedCategory] = useState('all'); // 'all', 'sports', 'cultural'
   const [formData, setFormData] = useState({
     eventId: '',
-    eventType: ''
+    eventType: '',
+    gender: '',
+    category: ''
   });
 
-  // Event subtype options
-  const eventSubtypes = {
-    sports: [
-      'Cricket',
-      'Football',
-      'Basketball',
-      'Volleyball',
-      'Badminton',
-      'Table Tennis',
-      'Chess',
-      'Carrom',
-      'Athletics',
-      'Kabaddi',
-      'Kho-Kho',
-      'Throwball',
-      'Swimming',
-      'Tennis'
-    ],
-    cultural: [
-      'Dance',
-      'Music',
-      'Drama',
-      'Fashion Show',
-      'Singing',
-      'Stand-up Comedy',
-      'Painting',
-      'Photography',
-      'Short Film',
-      'Poetry',
-      'Debate',
-      'Elocution',
-      'Mime',
-      'Skit'
-    ]
+  // Event categories with complete event lists
+  const eventsByCategory = {
+    men: {
+      sports: [
+        { name: '100 M', medals: 3 },
+        { name: '400 M', medals: 3 },
+        { name: '800 M', medals: 3 },
+        { name: '3 K', medals: 3 },
+        { name: '4 x 100 M Relay', medals: 12 },
+        { name: '4 x 400 M Relay', medals: 12 },
+        { name: 'Long jump', medals: 3 },
+        { name: 'Shot put', medals: 3 },
+        { name: 'Chess', medals: 2 },
+        { name: 'Table Tennis', medals: 2 },
+        { name: 'Traditional Yogasana', medals: 2 },
+        { name: 'Artistic Yogasana', medals: 2 },
+        { name: 'Taekwondo', medals: 16 },
+        { name: 'Cricket Championship (13+2)', count: 60 },
+        { name: 'Volley ball (8+4)', count: 40 },
+        { name: 'Basket ball (5+5)', count: 40 },
+        { name: 'Kabaddi (7+3)', count: 40 },
+        { name: 'Foot ball (7+3)', count: 20 },
+        { name: 'Kho-Kho (3+3)', count: 24 },
+        { name: 'Hockey (7+3)', count: 20 }
+      ],
+      cultural: [
+        { name: 'Singing idol', count: 1 },
+        { name: 'Group Singing (6 no.)', count: 6 },
+        { name: 'Singing Jodi', count: 2 },
+        { name: 'Classical/Light Vocal Solo', count: 1 },
+        { name: 'Western Vocal Solo', count: 1 },
+        { name: 'Anthyakshan Duo', count: 2 },
+        { name: 'Instrumental Solo', count: 1 },
+        { name: 'Classical Dance Solo', count: 1 },
+        { name: 'Dancing Star - Western Solo', count: 1 },
+        { name: 'Dancing Jodi - Western Duo', count: 2 },
+        { name: 'Spot Dance - Jodi', count: 2 },
+        { name: 'Group Dance (10 no.)', count: 10 },
+        { name: 'Short film', count: 5 },
+        { name: 'Skit (8 no.)', count: 8 },
+        { name: 'Mime (6 no.)', count: 6 },
+        { name: 'Dialogue Dhamakha', count: 1 },
+        { name: 'Mono Action', count: 1 },
+        { name: 'On the Spot Ad making', count: 4 },
+        { name: 'Master Orator', count: 1 },
+        { name: 'Spot Creative writing', count: 1 },
+        { name: 'Telugu Vyaasa rachana', count: 1 },
+        { name: 'Shayari - Hindi', count: 1 },
+        { name: 'Impromptu (JAM)', count: 1 },
+        { name: 'Story telling', count: 1 },
+        { name: 'Quiz wiz (3 no.)', count: 3 },
+        { name: 'Word Master', count: 1 },
+        { name: 'Dumb charades (2 no.)', count: 2 },
+        { name: 'Theme Painting', count: 1 },
+        { name: 'Clay modelling', count: 1 },
+        { name: 'Rangoli (2 no.)', count: 2 },
+        { name: 'Mehandi', count: 1 },
+        { name: 'Photography - Theme', count: 1 },
+        { name: 'Collage', count: 1 },
+        { name: 'Face Painting', count: 2 },
+        { name: 'Pencil Sketching', count: 1 },
+        { name: 'Mandala', count: 1 },
+        { name: 'Haute Couture - Theme Ramp walk (12 no.)', count: 12 },
+        { name: 'Craft villa (Accessory design)', count: 2 },
+        { name: 'Texart (Fashion sketching)', count: 1 },
+        { name: 'T-Shirt designing', count: 1 },
+        { name: 'Mr. Mahotsav', count: 1 },
+        { name: 'Mahotsav Got Talent', count: 10 }
+      ]
+    },
+    women: {
+      sports: [
+        { name: '100 M', medals: 3 },
+        { name: '400 M', medals: 3 },
+        { name: '800 M', medals: 3 },
+        { name: '4 x 100 M Relay', medals: 12 },
+        { name: '4 x 400 M Relay', medals: 12 },
+        { name: 'Long jump', medals: 3 },
+        { name: 'Shot put', medals: 3 },
+        { name: 'Chess', medals: 2 },
+        { name: 'Table Tennis', medals: 2 },
+        { name: 'Traditional Yogasana', medals: 2 },
+        { name: 'Artistic Yogasana', medals: 2 },
+        { name: 'Taekwondo', medals: 16 },
+        { name: 'Tennikoit', medals: 2 },
+        { name: 'Volley ball (8+4)', count: 20 },
+        { name: 'Basket ball (5+5)', count: 20 },
+        { name: 'Kabaddi (7+3)', count: 20 },
+        { name: 'Kho-Kho (3+3)', count: 24 },
+        { name: 'Throw ball (8+3)', count: 18 }
+      ],
+      cultural: [
+        { name: 'Singing idol', count: 1 },
+        { name: 'Group Singing (6 no.)', count: 6 },
+        { name: 'Singing Jodi', count: 2 },
+        { name: 'Classical/Light Vocal Solo', count: 1 },
+        { name: 'Western Vocal Solo', count: 1 },
+        { name: 'Anthyakshan Duo', count: 2 },
+        { name: 'Instrumental Solo', count: 1 },
+        { name: 'Classical Dance Solo', count: 1 },
+        { name: 'Dancing Star - Western Solo', count: 1 },
+        { name: 'Dancing Jodi - Western Duo', count: 2 },
+        { name: 'Spot Dance - Jodi', count: 2 },
+        { name: 'Group Dance (10 no.)', count: 10 },
+        { name: 'Short film', count: 5 },
+        { name: 'Skit (8 no.)', count: 8 },
+        { name: 'Mime (6 no.)', count: 6 },
+        { name: 'Dialogue Dhamakha', count: 1 },
+        { name: 'Mono Action', count: 1 },
+        { name: 'On the Spot Ad making', count: 4 },
+        { name: 'Master Orator', count: 1 },
+        { name: 'Spot Creative writing', count: 1 },
+        { name: 'Telugu Vyaasa rachana', count: 1 },
+        { name: 'Shayari - Hindi', count: 1 },
+        { name: 'Impromptu (JAM)', count: 1 },
+        { name: 'Story telling', count: 1 },
+        { name: 'Quiz wiz (3 no.)', count: 3 },
+        { name: 'Word Master', count: 1 },
+        { name: 'Dumb charades (2 no.)', count: 2 },
+        { name: 'Theme Painting', count: 1 },
+        { name: 'Clay modelling', count: 1 },
+        { name: 'Rangoli (2 no.)', count: 2 },
+        { name: 'Mehandi', count: 1 },
+        { name: 'Photography - Theme', count: 1 },
+        { name: 'Collage', count: 1 },
+        { name: 'Face Painting', count: 2 },
+        { name: 'Pencil Sketching', count: 1 },
+        { name: 'Mandala', count: 1 },
+        { name: 'Haute Couture - Theme Ramp walk (12 no.)', count: 12 },
+        { name: 'Craft villa (Accessory design)', count: 2 },
+        { name: 'Texart (Fashion sketching)', count: 1 },
+        { name: 'T-Shirt designing', count: 1 },
+        { name: 'Ms. Mahotsav', count: 1 },
+        { name: 'Mahotsav Got Talent', count: 10 }
+      ]
+    },
+    para: {
+      sports: [
+        { name: '100 M - Hand Amputee', count: 2 },
+        { name: '100 M - Leg Amputee', count: 2 },
+        { name: '100 M - Visual impairment', count: 2 },
+        { name: '400 M - Hand Amputee', count: 2 },
+        { name: '400 M - Leg Amputee', count: 2 },
+        { name: '400 M - Visual impairment', count: 2 },
+        { name: 'Long jump - Leg Amputee', count: 2 },
+        { name: 'Long jump - Hand Amputee', count: 2 },
+        { name: 'Shot put - Leg Amputee', count: 2 },
+        { name: 'Shot put - Hand Amputee', count: 2 },
+        { name: 'Cricket - Physically challenged', count: 25 }
+      ],
+      cultural: []
+    }
   };
-
-  // State for managing subevents in form
-  const [currentSubEvent, setCurrentSubEvent] = useState({ name: '', description: '' });
 
   useEffect(() => {
     fetchEvents();
@@ -165,27 +283,26 @@ const Events = () => {
     setShowModal(true);
   };
 
-  // Filter events based on search and category
-  const getFilteredEvents = () => {
-    return events.filter(event => {
-      // Search filter
-      const matchesSearch = searchTerm === '' || 
-        event.eventId?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        event.eventSubtype?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        event.eventSubtypeOther?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        event.description?.toLowerCase().includes(searchTerm.toLowerCase());
-
-      // Category filter
-      const matchesType = filterType === 'all' || event.eventType === filterType;
-
-      return matchesSearch && matchesType;
-    });
+  // Get events for current selection
+  const getCurrentEvents = () => {
+    const sessionEvents = eventsByCategory[selectedSession];
+    if (!sessionEvents) return [];
+    
+    if (selectedCategory === 'all') {
+      return [...(sessionEvents.sports || []), ...(sessionEvents.cultural || [])];
+    }
+    return sessionEvents[selectedCategory] || [];
   };
 
-  const filteredEvents = getFilteredEvents();
-  const sportCount = events.filter(e => e.eventType === 'sports').length;
-  const culturalCount = events.filter(e => e.eventType === 'cultural').length;
-  const paraCount = events.filter(e => e.eventType === 'para').length;
+  const currentEvents = getCurrentEvents();
+  
+  // Calculate counts
+  const menSportsCount = eventsByCategory.men.sports.length;
+  const menCulturalCount = eventsByCategory.men.cultural.length;
+  const womenSportsCount = eventsByCategory.women.sports.length;
+  const womenCulturalCount = eventsByCategory.women.cultural.length;
+  const paraSportsCount = eventsByCategory.para.sports.length;
+  const paraCulturalCount = eventsByCategory.para.cultural.length;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
@@ -229,50 +346,111 @@ const Events = () => {
           </button>
         </div>
 
-        {/* Search and Filter Section */}
+        {/* Session Selection - Main Buttons */}
         <div className="bg-white rounded-2xl shadow-xl p-6 mb-8 border border-gray-100">
-          {/* Search Bar */}
-          <div className="mb-6">
-            <label className="block text-sm font-bold text-gray-700 mb-3 uppercase tracking-wide">Search Events</label>
-            <div className="relative">
-              <input
-                type="text"
-                placeholder="Search by event name, description..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-12 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-indigo-100 focus:border-indigo-500 transition-all duration-200 bg-gray-50"
-              />
-              <svg className="w-6 h-6 text-gray-400 absolute left-4 top-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-              </svg>
-            </div>
+          <label className="block text-sm font-bold text-gray-700 mb-4 uppercase tracking-wide">Select Session</label>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+            {/* Men Events */}
+            <button
+              onClick={() => { setSelectedSession('men'); setSelectedCategory('all'); }}
+              className={`p-6 rounded-xl font-bold transition-all duration-200 transform hover:scale-105 ${
+                selectedSession === 'men'
+                  ? 'bg-gradient-to-br from-blue-600 to-blue-700 text-white shadow-2xl scale-105'
+                  : 'bg-gradient-to-br from-blue-50 to-blue-100 text-blue-800 hover:from-blue-100 hover:to-blue-200'
+              }`}
+            >
+              <div className="flex items-center justify-center space-x-3 mb-3">
+                <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                </svg>
+                <span className="text-2xl">Men Events</span>
+              </div>
+              <div className="flex justify-center space-x-4 text-sm">
+                <span className={`px-3 py-1 rounded-full ${selectedSession === 'men' ? 'bg-white bg-opacity-30' : 'bg-blue-200'}`}>
+                  Sports: {menSportsCount}
+                </span>
+                <span className={`px-3 py-1 rounded-full ${selectedSession === 'men' ? 'bg-white bg-opacity-30' : 'bg-blue-200'}`}>
+                  Cultural: {menCulturalCount}
+                </span>
+              </div>
+            </button>
+
+            {/* Women Events */}
+            <button
+              onClick={() => { setSelectedSession('women'); setSelectedCategory('all'); }}
+              className={`p-6 rounded-xl font-bold transition-all duration-200 transform hover:scale-105 ${
+                selectedSession === 'women'
+                  ? 'bg-gradient-to-br from-pink-600 to-pink-700 text-white shadow-2xl scale-105'
+                  : 'bg-gradient-to-br from-pink-50 to-pink-100 text-pink-800 hover:from-pink-100 hover:to-pink-200'
+              }`}
+            >
+              <div className="flex items-center justify-center space-x-3 mb-3">
+                <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                </svg>
+                <span className="text-2xl">Women Events</span>
+              </div>
+              <div className="flex justify-center space-x-4 text-sm">
+                <span className={`px-3 py-1 rounded-full ${selectedSession === 'women' ? 'bg-white bg-opacity-30' : 'bg-pink-200'}`}>
+                  Sports: {womenSportsCount}
+                </span>
+                <span className={`px-3 py-1 rounded-full ${selectedSession === 'women' ? 'bg-white bg-opacity-30' : 'bg-pink-200'}`}>
+                  Cultural: {womenCulturalCount}
+                </span>
+              </div>
+            </button>
+
+            {/* Para Events */}
+            <button
+              onClick={() => { setSelectedSession('para'); setSelectedCategory('all'); }}
+              className={`p-6 rounded-xl font-bold transition-all duration-200 transform hover:scale-105 ${
+                selectedSession === 'para'
+                  ? 'bg-gradient-to-br from-purple-600 to-purple-700 text-white shadow-2xl scale-105'
+                  : 'bg-gradient-to-br from-purple-50 to-purple-100 text-purple-800 hover:from-purple-100 hover:to-purple-200'
+              }`}
+            >
+              <div className="flex items-center justify-center space-x-3 mb-3">
+                <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                </svg>
+                <span className="text-2xl">Para Events</span>
+              </div>
+              <div className="flex justify-center space-x-4 text-sm">
+                <span className={`px-3 py-1 rounded-full ${selectedSession === 'para' ? 'bg-white bg-opacity-30' : 'bg-purple-200'}`}>
+                  Sports: {paraSportsCount}
+                </span>
+                <span className={`px-3 py-1 rounded-full ${selectedSession === 'para' ? 'bg-white bg-opacity-30' : 'bg-purple-200'}`}>
+                  Cultural: {paraCulturalCount}
+                </span>
+              </div>
+            </button>
           </div>
 
-          {/* Category Filter Buttons */}
-          <div>
+          {/* Sub-Category Filter */}
+          <div className="mt-6 pt-6 border-t border-gray-200">
             <label className="block text-sm font-bold text-gray-700 mb-3 uppercase tracking-wide">Filter by Category</label>
             <div className="flex flex-wrap gap-3">
               <button
-                onClick={() => setFilterType('all')}
+                onClick={() => setSelectedCategory('all')}
                 className={`px-6 py-3 rounded-xl font-semibold transition-all duration-200 transform hover:scale-105 ${
-                  filterType === 'all'
+                  selectedCategory === 'all'
                     ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-lg'
                     : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                 }`}
               >
                 <span className="flex items-center space-x-2">
-                  <span>All Events</span>
+                  <span>All</span>
                   <span className={`px-2 py-1 rounded-full text-xs font-bold ${
-                    filterType === 'all' ? 'bg-white text-indigo-600' : 'bg-gray-200 text-gray-700'
+                    selectedCategory === 'all' ? 'bg-white text-indigo-600' : 'bg-gray-200 text-gray-700'
                   }`}>
-                    {events.length}
+                    {(eventsByCategory[selectedSession]?.sports?.length || 0) + (eventsByCategory[selectedSession]?.cultural?.length || 0)}
                   </span>
                 </span>
               </button>
               <button
-                onClick={() => setFilterType('sports')}
+                onClick={() => setSelectedCategory('sports')}
                 className={`px-6 py-3 rounded-xl font-semibold transition-all duration-200 transform hover:scale-105 ${
-                  filterType === 'sports'
+                  selectedCategory === 'sports'
                     ? 'bg-gradient-to-r from-green-600 to-emerald-600 text-white shadow-lg'
                     : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                 }`}
@@ -283,358 +461,149 @@ const Events = () => {
                   </svg>
                   <span>Sports</span>
                   <span className={`px-2 py-1 rounded-full text-xs font-bold ${
-                    filterType === 'sports' ? 'bg-white text-green-600' : 'bg-gray-200 text-gray-700'
+                    selectedCategory === 'sports' ? 'bg-white text-green-600' : 'bg-gray-200 text-gray-700'
                   }`}>
-                    {sportCount}
+                    {eventsByCategory[selectedSession]?.sports?.length || 0}
                   </span>
                 </span>
               </button>
-              <button
-                onClick={() => setFilterType('cultural')}
-                className={`px-6 py-3 rounded-xl font-semibold transition-all duration-200 transform hover:scale-105 ${
-                  filterType === 'cultural'
-                    ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-lg'
-                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                }`}
-              >
-                <span className="flex items-center space-x-2">
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
-                  </svg>
-                  <span>Cultural</span>
-                  <span className={`px-2 py-1 rounded-full text-xs font-bold ${
-                    filterType === 'cultural' ? 'bg-white text-purple-600' : 'bg-gray-200 text-gray-700'
-                  }`}>
-                    {culturalCount}
+              {eventsByCategory[selectedSession]?.cultural?.length > 0 && (
+                <button
+                  onClick={() => setSelectedCategory('cultural')}
+                  className={`px-6 py-3 rounded-xl font-semibold transition-all duration-200 transform hover:scale-105 ${
+                    selectedCategory === 'cultural'
+                      ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-lg'
+                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  }`}
+                >
+                  <span className="flex items-center space-x-2">
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
+                    </svg>
+                    <span>Cultural</span>
+                    <span className={`px-2 py-1 rounded-full text-xs font-bold ${
+                      selectedCategory === 'cultural' ? 'bg-white text-purple-600' : 'bg-gray-200 text-gray-700'
+                    }`}>
+                      {eventsByCategory[selectedSession]?.cultural?.length || 0}
+                    </span>
                   </span>
-                </span>
-              </button>
-              <button
-                onClick={() => setFilterType('para')}
-                className={`px-6 py-3 rounded-xl font-semibold transition-all duration-200 transform hover:scale-105 ${
-                  filterType === 'para'
-                    ? 'bg-gradient-to-r from-blue-600 to-cyan-600 text-white shadow-lg'
-                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                }`}
-              >
-                <span className="flex items-center space-x-2">
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
-                  </svg>
-                  <span>Para</span>
-                  <span className={`px-2 py-1 rounded-full text-xs font-bold ${
-                    filterType === 'para' ? 'bg-white text-blue-600' : 'bg-gray-200 text-gray-700'
-                  }`}>
-                    {paraCount}
-                  </span>
-                </span>
-              </button>
+                </button>
+              )}
             </div>
           </div>
 
           {/* Results Count */}
           <div className="mt-6 pt-6 border-t border-gray-200">
             <div className="text-sm text-gray-600 bg-indigo-50 px-4 py-2 rounded-lg inline-block">
-              Showing <span className="font-bold text-indigo-600 text-lg">{filteredEvents.length}</span> of <span className="font-semibold">{events.length}</span> events
+              Showing <span className="font-bold text-indigo-600 text-lg">{currentEvents.length}</span> events in <span className="font-semibold capitalize">{selectedSession}</span> • <span className="font-semibold capitalize">{selectedCategory === 'all' ? 'All Categories' : selectedCategory}</span>
             </div>
           </div>
         </div>
 
-        {/* Events Grid */}
-        {loading ? (
-          <div className="flex justify-center items-center h-64">
-            <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-indigo-600"></div>
-          </div>
-        ) : filteredEvents.length === 0 ? (
+        {/* Events List */}
+        {currentEvents.length === 0 ? (
           <div className="bg-white rounded-xl shadow-lg p-12 text-center">
             <svg className="w-24 h-24 mx-auto text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
             </svg>
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">
-              {searchTerm || filterType !== 'all' ? 'No Events Found' : 'No Events Yet'}
-            </h3>
-            <p className="text-gray-600 mb-6">
-              {searchTerm || filterType !== 'all' 
-                ? 'Try adjusting your search or filters' 
-                : 'Get started by creating your first event'}
-            </p>
-            {!searchTerm && filterType === 'all' && (
-              <button
-                onClick={openAddModal}
-                className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white px-6 py-3 rounded-lg font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
-              >
-                Add First Event
-              </button>
-            )}
+            <h3 className="text-xl font-semibold text-gray-900 mb-2">No Events in This Category</h3>
+            <p className="text-gray-600">Try selecting a different category or session</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredEvents.map((event) => (
-              <div key={event._id} className="bg-white rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border border-gray-100">
-                <div className={`h-2 ${event.status === 'active' ? 'bg-gradient-to-r from-green-500 to-green-600' : event.status === 'completed' ? 'bg-gradient-to-r from-blue-500 to-blue-600' : 'bg-gradient-to-r from-gray-400 to-gray-500'}`}></div>
-                
-                <div className="p-6">
-                  {/* Event Header */}
-                  <div className="flex justify-between items-start mb-4">
-                    <div className="flex-1">
-                      <div className="flex items-center space-x-2 mb-2">
-                        <span className="text-xs font-semibold text-indigo-600 bg-indigo-100 px-2 py-1 rounded">
-                          {event.eventId}
-                        </span>
-                        <span className={`text-xs font-semibold px-2 py-1 rounded ${
-                          event.status === 'active' ? 'bg-green-100 text-green-700' :
-                          event.status === 'completed' ? 'bg-blue-100 text-blue-700' :
-                          'bg-gray-100 text-gray-700'
-                        }`}>
-                          {event.status}
-                        </span>
-                      </div>
-                      <h3 className="text-xl font-bold text-gray-900 mb-2">
-                        {event.eventSubtype === 'Other' && event.eventSubtypeOther 
-                          ? event.eventSubtypeOther 
-                          : event.eventSubtype || 'Event'}
-                      </h3>
-                      <div className="flex items-center space-x-2 mb-2">
-                        {event.eventType && (
-                          <span className={`text-xs font-semibold px-2 py-1 rounded ${
-                            event.eventType === 'sports' ? 'bg-green-100 text-green-700' :
-                            'bg-purple-100 text-purple-700'
-                          }`}>
-                            {event.eventType.toUpperCase()}
-                          </span>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* SubEvents */}
-                  {event.subEvents && event.subEvents.length > 0 && (
-                    <div className="mb-3">
-                      <p className="text-xs font-semibold text-gray-700 mb-2">SUB-EVENTS:</p>
-                      <div className="space-y-1">
-                        {event.subEvents.map((subEvent, idx) => (
-                          <div key={idx} className="bg-gray-50 border border-gray-200 rounded p-2">
-                            <p className="text-sm font-semibold text-gray-800">{subEvent.name}</p>
-                            {subEvent.description && (
-                              <p className="text-xs text-gray-600 mt-1">{subEvent.description}</p>
-                            )}
+          <div className="bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100">
+            <div className={`px-8 py-6 ${
+              selectedSession === 'men' ? 'bg-gradient-to-r from-blue-600 to-blue-700' :
+              selectedSession === 'women' ? 'bg-gradient-to-r from-pink-600 to-pink-700' :
+              'bg-gradient-to-r from-purple-600 to-purple-700'
+            }`}>
+              <h2 className="text-2xl font-bold text-white capitalize">
+                {selectedSession} • {selectedCategory === 'all' ? 'All Events' : selectedCategory}
+              </h2>
+            </div>
+            
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead className="bg-gray-50 border-b-2 border-gray-200">
+                  <tr>
+                    <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">#</th>
+                    <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Event Name</th>
+                    <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Category</th>
+                    <th className="px-6 py-4 text-center text-xs font-bold text-gray-700 uppercase tracking-wider">Participants/Medals</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-200">
+                  {currentEvents.map((event, index) => {
+                    const isFromSports = eventsByCategory[selectedSession]?.sports?.includes(event);
+                    return (
+                      <tr key={index} className="hover:bg-gray-50 transition-colors duration-150">
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <span className="text-sm font-semibold text-gray-900">{index + 1}</span>
+                        </td>
+                        <td className="px-6 py-4">
+                          <div className="flex items-center space-x-3">
+                            <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
+                              isFromSports 
+                                ? 'bg-gradient-to-br from-green-500 to-emerald-600' 
+                                : 'bg-gradient-to-br from-purple-500 to-pink-600'
+                            }`}>
+                              {isFromSports ? (
+                                <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                                </svg>
+                              ) : (
+                                <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
+                                </svg>
+                              )}
+                            </div>
+                            <div>
+                              <p className="text-sm font-bold text-gray-900">{event.name}</p>
+                            </div>
                           </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Description */}
-                    {event.description && (
-                    <p className="text-sm text-gray-600 mb-3 line-clamp-2">{event.description}</p>
-                  )}
-
-                  {/* Rules and Regulations */}
-                  {event.rules && (
-                    <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3 mb-3">
-                      <div className="flex items-start">
-                        <svg className="w-4 h-4 mr-2 text-yellow-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                        <div className="flex-1">
-                          <p className="text-xs font-semibold text-yellow-800 mb-1">RULES & REGULATIONS</p>
-                          <p className="text-xs text-gray-700 line-clamp-3 whitespace-pre-line">{event.rules}</p>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Event Details */}
-                  <div className="space-y-2 mb-4">
-                    {/* Registration Fee Info */}
-                    <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg p-3 border border-blue-200">
-                      <p className="text-xs font-semibold text-indigo-600 mb-2 uppercase">One-Time Registration Fee</p>
-                      <div className="flex items-center justify-between text-sm">
-                        <div className="flex items-center">
-                          <svg className="w-4 h-4 mr-1 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                          </svg>
-                          <span className="text-gray-700">Males: <span className="font-bold text-blue-700">₹{event.malesFee}</span></span>
-                        </div>
-                        <div className="flex items-center">
-                          <svg className="w-4 h-4 mr-1 text-pink-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                          </svg>
-                          <span className="text-gray-700">Females: <span className="font-bold text-pink-700">₹{event.femalesFee}</span></span>
-                        </div>
-                      </div>
-                      <p className="text-xs text-gray-600 mt-2 italic">* Participate in unlimited events with one registration</p>
-                    </div>
-                    <div className="flex items-center text-sm">
-                      <svg className="w-4 h-4 mr-2 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                      </svg>
-                      <span className="text-gray-700">
-                        {event.minParticipants}-{event.maxParticipants} participants
-                      </span>
-                    </div>
-                    {event.isTeamEvent && (
-                      <div className="flex items-center text-sm">
-                        <svg className="w-4 h-4 mr-2 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                        </svg>
-                        <span className="text-indigo-600 font-semibold">
-                          Team Event {event.teamSize && `(${event.teamSize} members)`}
-                        </span>
-                      </div>
-                    )}
-                    {!event.isTeamEvent && (
-                      <div className="flex items-center text-sm">
-                        <svg className="w-4 h-4 mr-2 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                        </svg>
-                        <span className="text-green-600 font-semibold">Individual Event</span>
-                      </div>
-                    )}
-                    {event.venue && (
-                      <div className="flex items-center text-sm">
-                        <svg className="w-4 h-4 mr-2 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                        </svg>
-                        <span className="text-gray-700">
-                          {event.venue === 'Other' && event.venueOther 
-                            ? event.venueOther 
-                            : event.venue}
-                        </span>
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Coordinator Info */}
-                  {event.coordinatorName && (
-                    <div className="bg-gradient-to-r from-indigo-50 to-purple-50 rounded-lg p-4 mb-4 border border-indigo-100">
-                      <p className="text-xs font-semibold text-indigo-600 mb-2 uppercase">Coordinator</p>
-                      <p className="text-sm font-semibold text-gray-900 mb-1">{event.coordinatorName}</p>
-                      {event.coordinatorEmail && (
-                        <a href={`mailto:${event.coordinatorEmail}`} className="text-xs text-gray-600 hover:text-indigo-600 flex items-center mb-1">
-                          <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                          </svg>
-                          {event.coordinatorEmail}
-                        </a>
-                      )}
-                      {event.coordinatorPhone && (
-                        <a href={`tel:${event.coordinatorPhone}`} className="text-xs text-gray-600 hover:text-indigo-600 flex items-center">
-                          <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-                          </svg>
-                          {event.coordinatorPhone}
-                        </a>
-                      )}
-                    </div>
-                  )}
-
-                  {/* Action Buttons */}
-                  <div className="flex space-x-2">
-                    <button
-                      onClick={() => handleEdit(event)}
-                      className="flex-1 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white px-4 py-2 rounded-lg font-semibold transition-all duration-200 transform hover:scale-105 flex items-center justify-center space-x-1"
-                    >
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                      </svg>
-                      <span>Edit</span>
-                    </button>
-                    <button
-                      onClick={() => handleDelete(event._id)}
-                      className="flex-1 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white px-4 py-2 rounded-lg font-semibold transition-all duration-200 transform hover:scale-105 flex items-center justify-center space-x-1"
-                    >
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                      </svg>
-                      <span>Delete</span>
-                    </button>
-                  </div>
-                </div>
-              </div>
-            ))}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <span className={`inline-flex px-3 py-1 text-xs font-semibold rounded-full ${
+                            isFromSports
+                              ? 'bg-green-100 text-green-800'
+                              : 'bg-purple-100 text-purple-800'
+                          }`}>
+                            {isFromSports ? 'Sports' : 'Cultural'}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 text-center">
+                          {event.medals !== undefined ? (
+                            <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-gradient-to-r from-yellow-400 to-yellow-500 text-yellow-900">
+                              <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                              </svg>
+                              {event.medals} Medals
+                            </span>
+                          ) : event.count !== undefined ? (
+                            <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-gradient-to-r from-blue-400 to-indigo-500 text-white">
+                              <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                              </svg>
+                              {event.count} Participants
+                            </span>
+                          ) : (
+                            <span className="text-gray-400 text-xs">—</span>
+                          )}
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
           </div>
         )}
       </div>
 
-      {/* Add/Edit Modal */}
-      {showModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50 overflow-y-auto">
-          <div className="bg-white rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
-            <div className="sticky top-0 bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-8 py-6 rounded-t-2xl">
-              <div className="flex justify-between items-center">
-                <h2 className="text-2xl font-bold">
-                  {editingEvent ? 'Edit Event' : 'Add New Event'}
-                </h2>
-                <button
-                  onClick={closeModal}
-                  className="text-white hover:bg-white hover:bg-opacity-20 rounded-lg p-2 transition-all duration-200"
-                >
-                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                </button>
-              </div>
-            </div>
-
-            <form onSubmit={handleSubmit} className="p-8">
-              <div className="grid grid-cols-1 gap-6">
-                {/* Event Name */}
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">Event Name *</label>
-                  <input
-                    type="text"
-                    name="eventId"
-                    value={formData.eventId}
-                    onChange={handleInputChange}
-                    required
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-                    placeholder="e.g., Cricket, Dance Competition, Football"
-                  />
-                </div>
-
-                {/* Event Type */}
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">Event Type *</label>
-                  <select
-                    name="eventType"
-                    value={formData.eventType}
-                    onChange={handleInputChange}
-                    required
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-                  >
-                    <option value="">Select Event Type</option>
-                    <option value="sports">Sports</option>
-                    <option value="cultural">Cultural</option>
-                    <option value="para">Para</option>
-                  </select>
-                </div>
-
-              </div>
-
-              {/* Submit Buttons */}
-              <div className="flex justify-end space-x-4 mt-8 pt-6 border-t border-gray-200">
-                <button
-                  type="button"
-                  onClick={closeModal}
-                  className="px-6 py-3 border-2 border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 transition-all duration-200"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="px-8 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
-                >
-                  {editingEvent ? 'Update Event' : 'Create Event'}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
+      {/* Removed old event cards and modal - keeping this comment for reference */}
+      {/* Old event management system removed - now displaying structured event lists by session */}
     </div>
   );
 };
 
 export default Events;
+
